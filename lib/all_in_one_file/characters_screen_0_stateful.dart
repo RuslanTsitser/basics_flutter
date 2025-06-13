@@ -29,7 +29,7 @@ class CharactersScreen extends StatefulWidget {
 
 class _CharactersScreenState extends State<CharactersScreen> {
   final Dio _dio = Dio();
-  final List<Character> _characters = [];
+  final List<Map<String, dynamic>> _characters = [];
   bool _isLoading = false;
   String? _error;
   final ScrollController _scrollController = ScrollController();
@@ -74,7 +74,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
           final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
           setState(() {
             _characters.clear();
-            _characters.addAll(decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)));
+            _characters.addAll(decodedData as List<Map<String, dynamic>>);
           });
         }
       }
@@ -87,8 +87,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Character> newCharacters =
-            results.map((json) => Character.fromJson(json as Map<String, dynamic>)).toList();
+        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
 
         // Cache the results
         final prefs = await SharedPreferences.getInstance();
@@ -170,7 +169,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
-                    imageUrl: character.imageUrl,
+                    imageUrl: character['image'] as String,
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,
@@ -183,49 +182,13 @@ class _CharactersScreenState extends State<CharactersScreen> {
                     ),
                   ),
                 ),
-                title: Text(character.name),
-                subtitle: Text('${character.species} - ${character.status}'),
+                title: Text(character['name'] as String),
+                subtitle: Text('${character['species']} - ${character['status']}'),
               ),
             );
           },
         ),
       ),
     );
-  }
-}
-
-class Character {
-  final int id;
-  final String name;
-  final String imageUrl;
-  final String status;
-  final String species;
-
-  Character({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
-    required this.status,
-    required this.species,
-  });
-
-  factory Character.fromJson(Map<String, dynamic> json) {
-    return Character(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      imageUrl: json['image'] as String,
-      status: json['status'] as String,
-      species: json['species'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'image': imageUrl,
-      'status': status,
-      'species': species,
-    };
   }
 }
