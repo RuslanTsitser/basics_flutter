@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '2.one_folder_with_repositories/main.dart' as stateful;
+import '3.one_folder_with_data_domain/main.dart' as stateful;
 
 void main() {
   runApp(const MainApp());
