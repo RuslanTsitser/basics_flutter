@@ -1,13 +1,15 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'character.dart';
+import 'characters_repository.dart';
+import 'favorites_repository.dart';
 
 class CharactersNotifier with ChangeNotifier {
-  final Dio dio = Dio();
+  final CharactersRepository charactersRepository;
+  final FavoritesRepository favoritesRepository;
+
+  CharactersNotifier({required this.charactersRepository, required this.favoritesRepository});
+
   final List<Character> characters = [];
   final List<Character> favoriteCharacters = [];
   bool isLoading = false;
@@ -26,40 +28,11 @@ class CharactersNotifier with ChangeNotifier {
     notifyListeners();
 
     try {
-      if (currentPage == 1) {
-        final prefs = await SharedPreferences.getInstance();
-        final cachedData = prefs.getString('characters_page_$currentPage');
-        if (cachedData != null) {
-          final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
-          characters.clear();
-          characters.addAll(decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)));
-          notifyListeners();
-        }
-      }
-
-      final response = await dio.get(
-        'https://rickandmortyapi.com/api/character',
-        queryParameters: {'page': currentPage},
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-          'characters_page_$currentPage',
-          json.encode(results),
-        );
-
-        if (currentPage == 1) {
-          characters.clear();
-        }
-        characters.addAll(newCharacters.map((json) => Character.fromJson(json)));
-        currentPage++;
-        hasMorePages = response.data['info']['next'] != null;
-        notifyListeners();
-      }
+      final result = await charactersRepository.getCharacters(currentPage);
+      characters.addAll(result.$1);
+      hasMorePages = result.$2;
+      currentPage++;
+      notifyListeners();
     } catch (e) {
       print(e);
       error = 'Failed to load characters: $e';
@@ -71,29 +44,10 @@ class CharactersNotifier with ChangeNotifier {
   }
 
   Future<void> loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favorites = prefs.getStringList('favorites') ?? [];
-    this.favorites = favorites.toSet();
-    notifyListeners();
-    await _loadFavoriteCharacters();
-  }
-
-  Future<void> _loadFavoriteCharacters() async {
-    final List<Character> characters = [];
-
-    for (final id in favorites) {
-      try {
-        final response = await dio.get('https://rickandmortyapi.com/api/character/$id');
-        if (response.statusCode == 200) {
-          characters.add(Character.fromJson(response.data as Map<String, dynamic>));
-        }
-      } catch (e) {
-        print(e);
-      }
-    }
-
+    final result = await favoritesRepository.getFavorites();
+    favorites = result.map((character) => character.id.toString()).toSet();
     favoriteCharacters.clear();
-    favoriteCharacters.addAll(characters);
+    favoriteCharacters.addAll(result);
     notifyListeners();
   }
 
@@ -114,16 +68,14 @@ class CharactersNotifier with ChangeNotifier {
   }
 
   Future<void> toggleFavorite(String characterId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final favorites = prefs.getStringList('favorites') ?? [];
-
-    if (this.favorites.contains(characterId)) {
+    if (favorites.contains(characterId)) {
+      await favoritesRepository.removeFavorite(characterId);
       favorites.remove(characterId);
     } else {
+      await favoritesRepository.addFavorite(characterId);
       favorites.add(characterId);
     }
-
-    await prefs.setStringList('favorites', favorites);
+    notifyListeners();
     await loadFavorites();
   }
 

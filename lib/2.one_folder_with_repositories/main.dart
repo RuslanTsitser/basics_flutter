@@ -5,7 +5,9 @@ import 'characters_bottom_navigation_bar.dart';
 import 'characters_list.dart';
 import 'characters_notifier.dart';
 import 'characters_notifier_provider.dart';
+import 'characters_repository.dart';
 import 'favorites_list.dart';
+import 'favorites_repository.dart';
 
 void main() {
   runApp(const MainApp());
@@ -30,7 +32,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final CharactersNotifier notifier = CharactersNotifier();
+  final CharactersNotifier notifier = CharactersNotifier(
+    charactersRepository: const CharactersRepository(),
+    favoritesRepository: const FavoritesRepository(),
+  );
 
   @override
   void initState() {
