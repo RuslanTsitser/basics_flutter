@@ -65,7 +65,8 @@ class CharactersNotifierProvider extends InheritedNotifier<CharactersNotifier> {
   });
 
   static CharactersNotifierProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CharactersNotifierProvider>();
+    return context
+        .dependOnInheritedWidgetOfExactType<CharactersNotifierProvider>();
   }
 }
 
@@ -98,7 +99,9 @@ class CharactersBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notifier = CharactersNotifierProvider.of(context)!.notifier!;
-    return notifier.selectedIndex == 0 ? const CharactersList() : const FavoritesList();
+    return notifier.selectedIndex == 0
+        ? const CharactersList()
+        : const FavoritesList();
   }
 }
 
@@ -184,9 +187,11 @@ class CharactersNotifier with ChangeNotifier {
         final prefs = await SharedPreferences.getInstance();
         final cachedData = prefs.getString('characters_page_$currentPage');
         if (cachedData != null) {
-          final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
+          final List<dynamic> decodedData =
+              json.decode(cachedData) as List<dynamic>;
           characters.clear();
-          characters.addAll(decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)));
+          characters.addAll(decodedData
+              .map((json) => Character.fromJson(json as Map<String, dynamic>)));
           notifyListeners();
         }
       }
@@ -198,7 +203,8 @@ class CharactersNotifier with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
+        final List<Map<String, dynamic>> newCharacters =
+            results.map((json) => json as Map<String, dynamic>).toList();
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(
@@ -209,7 +215,8 @@ class CharactersNotifier with ChangeNotifier {
         if (currentPage == 1) {
           characters.clear();
         }
-        characters.addAll(newCharacters.map((json) => Character.fromJson(json)));
+        characters
+            .addAll(newCharacters.map((json) => Character.fromJson(json)));
         currentPage++;
         hasMorePages = response.data['info']['next'] != null;
         notifyListeners();
@@ -237,9 +244,11 @@ class CharactersNotifier with ChangeNotifier {
 
     for (final id in favorites) {
       try {
-        final response = await dio.get('https://rickandmortyapi.com/api/character/$id');
+        final response =
+            await dio.get('https://rickandmortyapi.com/api/character/$id');
         if (response.statusCode == 200) {
-          characters.add(Character.fromJson(response.data as Map<String, dynamic>));
+          characters
+              .add(Character.fromJson(response.data as Map<String, dynamic>));
         }
       } catch (e) {
         print(e);
@@ -256,7 +265,8 @@ class CharactersNotifier with ChangeNotifier {
   }
 
   void _onScroll() {
-    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       if (!isLoading && hasMorePages && selectedIndex == 0) {
         loadCharacters();
       }
@@ -316,7 +326,8 @@ class CharactersList extends StatelessWidget {
           }
 
           final character = notifier.characters[index];
-          final isFavorite = notifier.favorites.contains(character.id.toString());
+          final isFavorite =
+              notifier.favorites.contains(character.id.toString());
 
           return Card(
             margin: const EdgeInsets.symmetric(
@@ -347,7 +358,8 @@ class CharactersList extends StatelessWidget {
                   isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: isFavorite ? Colors.red : null,
                 ),
-                onPressed: () => notifier.toggleFavorite(character.id.toString()),
+                onPressed: () =>
+                    notifier.toggleFavorite(character.id.toString()),
               ),
             ),
           );

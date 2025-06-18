@@ -68,7 +68,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       if (!_isLoading && _hasMorePages && _selectedIndex == 0) {
         _loadCharacters();
       }
@@ -89,9 +90,11 @@ class _MainScreenState extends State<MainScreen> {
 
     for (final id in _favorites) {
       try {
-        final response = await _dio.get('https://rickandmortyapi.com/api/character/$id');
+        final response =
+            await _dio.get('https://rickandmortyapi.com/api/character/$id');
         if (response.statusCode == 200) {
-          characters.add(Character.fromJson(response.data as Map<String, dynamic>));
+          characters
+              .add(Character.fromJson(response.data as Map<String, dynamic>));
         }
       } catch (e) {
         print(e);
@@ -131,10 +134,12 @@ class _MainScreenState extends State<MainScreen> {
         final prefs = await SharedPreferences.getInstance();
         final cachedData = prefs.getString('characters_page_$_currentPage');
         if (cachedData != null) {
-          final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
+          final List<dynamic> decodedData =
+              json.decode(cachedData) as List<dynamic>;
           setState(() {
             _characters.clear();
-            _characters.addAll(decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)));
+            _characters.addAll(decodedData.map(
+                (json) => Character.fromJson(json as Map<String, dynamic>)));
           });
         }
       }
@@ -146,7 +151,8 @@ class _MainScreenState extends State<MainScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
+        final List<Map<String, dynamic>> newCharacters =
+            results.map((json) => json as Map<String, dynamic>).toList();
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(
@@ -158,7 +164,8 @@ class _MainScreenState extends State<MainScreen> {
           if (_currentPage == 1) {
             _characters.clear();
           }
-          _characters.addAll(newCharacters.map((json) => Character.fromJson(json)));
+          _characters
+              .addAll(newCharacters.map((json) => Character.fromJson(json)));
           _currentPage++;
           _hasMorePages = response.data['info']['next'] != null;
         });

@@ -59,8 +59,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onScroll() {
-    if (notifier.scrollController.position.pixels == notifier.scrollController.position.maxScrollExtent) {
-      if (!notifier.isLoading && notifier.hasMorePages && notifier.selectedIndex == 0) {
+    if (notifier.scrollController.position.pixels ==
+        notifier.scrollController.position.maxScrollExtent) {
+      if (!notifier.isLoading &&
+          notifier.hasMorePages &&
+          notifier.selectedIndex == 0) {
         _loadCharacters();
       }
     }
@@ -80,9 +83,11 @@ class _MainScreenState extends State<MainScreen> {
 
     for (final id in notifier.favorites) {
       try {
-        final response = await notifier.dio.get('https://rickandmortyapi.com/api/character/$id');
+        final response = await notifier.dio
+            .get('https://rickandmortyapi.com/api/character/$id');
         if (response.statusCode == 200) {
-          characters.add(Character.fromJson(response.data as Map<String, dynamic>));
+          characters
+              .add(Character.fromJson(response.data as Map<String, dynamic>));
         }
       } catch (e) {
         print(e);
@@ -120,12 +125,15 @@ class _MainScreenState extends State<MainScreen> {
     try {
       if (notifier.currentPage == 1) {
         final prefs = await SharedPreferences.getInstance();
-        final cachedData = prefs.getString('characters_page_${notifier.currentPage}');
+        final cachedData =
+            prefs.getString('characters_page_${notifier.currentPage}');
         if (cachedData != null) {
-          final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
+          final List<dynamic> decodedData =
+              json.decode(cachedData) as List<dynamic>;
           setState(() {
             notifier.characters.clear();
-            notifier.characters.addAll(decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)));
+            notifier.characters.addAll(decodedData.map(
+                (json) => Character.fromJson(json as Map<String, dynamic>)));
           });
         }
       }
@@ -137,7 +145,8 @@ class _MainScreenState extends State<MainScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
+        final List<Map<String, dynamic>> newCharacters =
+            results.map((json) => json as Map<String, dynamic>).toList();
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(
@@ -149,7 +158,8 @@ class _MainScreenState extends State<MainScreen> {
           if (notifier.currentPage == 1) {
             notifier.characters.clear();
           }
-          notifier.characters.addAll(newCharacters.map((json) => Character.fromJson(json)));
+          notifier.characters
+              .addAll(newCharacters.map((json) => Character.fromJson(json)));
           notifier.currentPage++;
           notifier.hasMorePages = response.data['info']['next'] != null;
         });
@@ -191,7 +201,8 @@ class _MainScreenState extends State<MainScreen> {
           }
 
           final character = notifier.characters[index];
-          final isFavorite = notifier.favorites.contains(character.id.toString());
+          final isFavorite =
+              notifier.favorites.contains(character.id.toString());
 
           return Card(
             margin: const EdgeInsets.symmetric(
@@ -295,7 +306,9 @@ class _MainScreenState extends State<MainScreen> {
             ),
         ],
       ),
-      body: notifier.selectedIndex == 0 ? _buildCharacterList() : _buildFavoritesList(),
+      body: notifier.selectedIndex == 0
+          ? _buildCharacterList()
+          : _buildFavoritesList(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: notifier.selectedIndex,
         onTap: _onIndexSelected,

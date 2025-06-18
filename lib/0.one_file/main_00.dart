@@ -54,7 +54,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       if (!_isLoading && _hasMorePages && _selectedIndex == 0) {
         _loadCharacters();
       }
@@ -75,7 +76,8 @@ class _MainScreenState extends State<MainScreen> {
 
     for (final id in _favorites) {
       try {
-        final response = await _dio.get('https://rickandmortyapi.com/api/character/$id');
+        final response =
+            await _dio.get('https://rickandmortyapi.com/api/character/$id');
         if (response.statusCode == 200) {
           characters.add(response.data as Map<String, dynamic>);
         }
@@ -117,7 +119,8 @@ class _MainScreenState extends State<MainScreen> {
         final prefs = await SharedPreferences.getInstance();
         final cachedData = prefs.getString('characters_page_$_currentPage');
         if (cachedData != null) {
-          final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
+          final List<dynamic> decodedData =
+              json.decode(cachedData) as List<dynamic>;
           setState(() {
             _characters.clear();
             _characters.addAll(decodedData.cast<Map<String, dynamic>>());
@@ -132,7 +135,8 @@ class _MainScreenState extends State<MainScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'] as List<dynamic>;
-        final List<Map<String, dynamic>> newCharacters = results.map((json) => json as Map<String, dynamic>).toList();
+        final List<Map<String, dynamic>> newCharacters =
+            results.map((json) => json as Map<String, dynamic>).toList();
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(
@@ -211,7 +215,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               title: Text(character['name'] as String),
-              subtitle: Text('${character['species']} - ${character['status']}'),
+              subtitle:
+                  Text('${character['species']} - ${character['status']}'),
               trailing: IconButton(
                 icon: Icon(
                   isFavorite ? Icons.favorite : Icons.favorite_border,

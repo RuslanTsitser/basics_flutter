@@ -25,7 +25,8 @@ class CharactersList extends StatelessWidget {
           }
 
           final character = notifier.characters[index];
-          final isFavorite = notifier.favorites.contains(character.id.toString());
+          final isFavorite =
+              notifier.favorites.contains(character.id.toString());
 
           return Card(
             margin: const EdgeInsets.symmetric(
@@ -56,7 +57,8 @@ class CharactersList extends StatelessWidget {
                   isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: isFavorite ? Colors.red : null,
                 ),
-                onPressed: () => notifier.toggleFavorite(character.id.toString()),
+                onPressed: () =>
+                    notifier.toggleFavorite(character.id.toString()),
               ),
             ),
           );

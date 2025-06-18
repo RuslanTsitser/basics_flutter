@@ -16,15 +16,21 @@ class CharactersRepositoryImpl implements CharactersRepository {
 
     if (cachedData != null) {
       final hasMorePages = prefs.getBool('has_more_pages_$page') ?? true;
-      final List<dynamic> decodedData = json.decode(cachedData) as List<dynamic>;
-      final characters = decodedData.map((json) => Character.fromJson(json as Map<String, dynamic>)).toList();
+      final List<dynamic> decodedData =
+          json.decode(cachedData) as List<dynamic>;
+      final characters = decodedData
+          .map((json) => Character.fromJson(json as Map<String, dynamic>))
+          .toList();
       return (characters, hasMorePages);
     }
 
     final Dio dio = Dio();
-    final response = await dio.get('https://rickandmortyapi.com/api/character', queryParameters: {'page': page});
+    final response = await dio.get('https://rickandmortyapi.com/api/character',
+        queryParameters: {'page': page});
     final List<dynamic> results = response.data['results'] as List<dynamic>;
-    final List<Character> characters = results.map((json) => Character.fromJson(json as Map<String, dynamic>)).toList();
+    final List<Character> characters = results
+        .map((json) => Character.fromJson(json as Map<String, dynamic>))
+        .toList();
     final bool hasMorePages = response.data['info']['next'] != null;
     await prefs.setString('characters_page_$page', json.encode(results));
     await prefs.setBool('has_more_pages_$page', hasMorePages);

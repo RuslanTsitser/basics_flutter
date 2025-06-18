@@ -65,6 +65,8 @@ class CharactersBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notifier = CharactersNotifierProvider.of(context)!.notifier!;
-    return notifier.selectedIndex == 0 ? const CharactersList() : const FavoritesList();
+    return notifier.selectedIndex == 0
+        ? const CharactersList()
+        : const FavoritesList();
   }
 }

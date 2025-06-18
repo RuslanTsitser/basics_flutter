@@ -10,6 +10,7 @@ class CharactersNotifierProvider extends InheritedNotifier<CharactersNotifier> {
   });
 
   static CharactersNotifierProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CharactersNotifierProvider>();
+    return context
+        .dependOnInheritedWidgetOfExactType<CharactersNotifierProvider>();
   }
 }

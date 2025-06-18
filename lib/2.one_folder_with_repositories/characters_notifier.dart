@@ -8,7 +8,8 @@ class CharactersNotifier with ChangeNotifier {
   final CharactersRepository charactersRepository;
   final FavoritesRepository favoritesRepository;
 
-  CharactersNotifier({required this.charactersRepository, required this.favoritesRepository});
+  CharactersNotifier(
+      {required this.charactersRepository, required this.favoritesRepository});
 
   final List<Character> characters = [];
   final List<Character> favoriteCharacters = [];
@@ -56,7 +57,8 @@ class CharactersNotifier with ChangeNotifier {
   }
 
   void _onScroll() {
-    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       if (!isLoading && hasMorePages && selectedIndex == 0) {
         loadCharacters();
       }

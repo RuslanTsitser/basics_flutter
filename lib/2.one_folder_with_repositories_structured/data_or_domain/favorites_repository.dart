@@ -13,7 +13,8 @@ class FavoritesRepository {
 
     final Dio dio = Dio();
     for (final id in favorites) {
-      final response = await dio.get('https://rickandmortyapi.com/api/character/$id');
+      final response =
+          await dio.get('https://rickandmortyapi.com/api/character/$id');
       characters.add(Character.fromJson(response.data as Map<String, dynamic>));
     }
     return characters;
