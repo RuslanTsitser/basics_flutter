@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '0.heavy_widget_screen.dart';
-import '1.heavy_widget_optimized_screen.dart';
-import '2.heavy_widget_optimized_better_screen.dart';
+import 'ui_thread/0.heavy_widget_screen.dart';
+import 'ui_thread/1.heavy_widget_optimized_screen.dart';
+import 'ui_thread/2.heavy_widget_optimized_better_screen.dart';
 
 class ProfilingScreen extends StatelessWidget {
   const ProfilingScreen({super.key});
