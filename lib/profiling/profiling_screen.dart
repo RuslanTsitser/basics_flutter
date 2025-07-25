@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'raster_thread/0.raster_heavy_widget_screen.dart';
 import 'ui_thread/0.heavy_widget_screen.dart';
 import 'ui_thread/1.heavy_widget_optimized_screen.dart';
 import 'ui_thread/2.heavy_widget_optimized_better_screen.dart';
+import 'ui_thread/3.blocking_example_screen.dart';
 
 class ProfilingScreen extends StatelessWidget {
   const ProfilingScreen({super.key});
@@ -70,6 +72,43 @@ class ProfilingScreen extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text('Heavy Widget with const and Separated Widget'),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const BlockingExampleScreen(),
+                    transitionsBuilder: (_, __, ___, child) => child,
+                  ),
+                );
+              },
+              child: const ColoredBox(
+                color: Colors.red,
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Blocking Example'),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        const RasterHeavyWidgetScreen(),
+                    transitionsBuilder: (_, __, ___, child) => child,
+                  ),
+                );
+              },
+              child: const ColoredBox(
+                color: Colors.red,
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Raster Heavy Widget'),
                 ),
               ),
             ),
